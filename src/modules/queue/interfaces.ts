@@ -6,3 +6,10 @@ export interface ISimpleQueue<T> {
     shift(): T;
     isEmpty(): boolean;
 }
+
+export interface IDoubleQueue<T> extends ISimpleQueue<T>{
+    get back(): T | null;
+
+    pop(): T;
+    unshift(value: T): void;
+}
