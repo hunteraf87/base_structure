@@ -12,7 +12,6 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
 };
 var _LinkedListItem_next, _LinkedListItem_prev;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LinkedListItem = void 0;
 class LinkedListItem {
     constructor(value) {
         _LinkedListItem_next.set(this, null);
@@ -32,5 +31,5 @@ class LinkedListItem {
         __classPrivateFieldSet(this, _LinkedListItem_prev, item, "f");
     }
 }
-exports.LinkedListItem = LinkedListItem;
+exports.default = LinkedListItem;
 _LinkedListItem_next = new WeakMap(), _LinkedListItem_prev = new WeakMap();

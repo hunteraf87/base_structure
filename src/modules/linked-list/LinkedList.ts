@@ -1,7 +1,7 @@
 import {ILinkedList, ListItemOrNull, ILinkedListItem} from "./interfaces";
-import {LinkedListItem} from "./LinkedListItem";
+import LinkedListItem from "./LinkedListItem";
 
-export class LinkedList<T = unknown> implements ILinkedList<T> {
+export default class LinkedList<T = unknown> implements ILinkedList<T> {
     #first: ListItemOrNull<T> = null;
     #last: ListItemOrNull<T> = null;
 

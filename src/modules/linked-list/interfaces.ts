@@ -16,9 +16,17 @@ export interface ILinkedList<T> {
 
     add(value: T): void;
     find(value: T, strict: boolean): ILinkedListItem<T> | null;
+
+    insertBefore(value: T, before: T): ILinkedListItem<T>;
     insertBefore(value: T, itemList: ILinkedListItem<T>): ILinkedListItem<T>;
+
+    insertAfter(value: T, after: T): ILinkedListItem<T>;
     insertAfter(value: T, itemList: ILinkedListItem<T>): ILinkedListItem<T>;
-    delete(value: T, strict: boolean): boolean;
+
+    delete(value: ILinkedListItem<T>): boolean;
+    delete(value: T, strict?: boolean): boolean;
+
+    isEmpty(): boolean;
 }
 
 export type ListItemOrNull<T> = ILinkedListItem<T> | null;

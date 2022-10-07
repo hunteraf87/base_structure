@@ -10,10 +10,12 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var _LinkedList_first, _LinkedList_last;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LinkedList = void 0;
-const LinkedListItem_1 = require("./LinkedListItem");
+const LinkedListItem_1 = __importDefault(require("./LinkedListItem"));
 class LinkedList {
     constructor() {
         _LinkedList_first.set(this, null);
@@ -26,8 +28,8 @@ class LinkedList {
         return __classPrivateFieldGet(this, _LinkedList_last, "f");
     }
     add(value) {
-        const newItem = new LinkedListItem_1.LinkedListItem(value);
-        if (__classPrivateFieldGet(this, _LinkedList_last, "f") instanceof LinkedListItem_1.LinkedListItem) {
+        const newItem = new LinkedListItem_1.default(value);
+        if (__classPrivateFieldGet(this, _LinkedList_last, "f") instanceof LinkedListItem_1.default) {
             newItem.setPrev(__classPrivateFieldGet(this, _LinkedList_last, "f"));
             __classPrivateFieldGet(this, _LinkedList_last, "f").setNext(newItem);
             __classPrivateFieldSet(this, _LinkedList_last, newItem, "f");
@@ -38,14 +40,14 @@ class LinkedList {
         }
     }
     insertBefore(value, itemOrValue) {
-        const newItem = new LinkedListItem_1.LinkedListItem(value);
-        const itemList = itemOrValue instanceof LinkedListItem_1.LinkedListItem ? itemOrValue : this.find(itemOrValue);
+        const newItem = new LinkedListItem_1.default(value);
+        const itemList = itemOrValue instanceof LinkedListItem_1.default ? itemOrValue : this.find(itemOrValue);
         if (itemList === null) {
             throw new Error(`Value '${itemOrValue} not found id list'`);
         }
         newItem.setNext(itemList);
         newItem.setPrev(itemList.prev);
-        if (newItem.prev instanceof LinkedListItem_1.LinkedListItem) {
+        if (newItem.prev instanceof LinkedListItem_1.default) {
             newItem.prev.setNext(newItem);
         }
         if (itemList === __classPrivateFieldGet(this, _LinkedList_first, "f")) {
@@ -55,8 +57,8 @@ class LinkedList {
         return newItem;
     }
     insertAfter(value, itemOrValue) {
-        const newItem = new LinkedListItem_1.LinkedListItem(value);
-        const itemList = itemOrValue instanceof LinkedListItem_1.LinkedListItem ? itemOrValue : this.find(itemOrValue);
+        const newItem = new LinkedListItem_1.default(value);
+        const itemList = itemOrValue instanceof LinkedListItem_1.default ? itemOrValue : this.find(itemOrValue);
         if (itemList === null) {
             throw new Error(`Value '${itemOrValue} not found id list'`);
         }
@@ -77,15 +79,15 @@ class LinkedList {
         return null;
     }
     delete(valueOrItem, strict = true) {
-        const findItem = valueOrItem instanceof LinkedListItem_1.LinkedListItem ? valueOrItem : this.find(valueOrItem, strict);
-        if (findItem instanceof LinkedListItem_1.LinkedListItem) {
-            if (findItem.prev instanceof LinkedListItem_1.LinkedListItem) {
+        const findItem = valueOrItem instanceof LinkedListItem_1.default ? valueOrItem : this.find(valueOrItem, strict);
+        if (findItem instanceof LinkedListItem_1.default) {
+            if (findItem.prev instanceof LinkedListItem_1.default) {
                 findItem.prev.setNext(findItem.next);
             }
             else {
                 __classPrivateFieldSet(this, _LinkedList_first, findItem.next, "f");
             }
-            if (findItem.next instanceof LinkedListItem_1.LinkedListItem) {
+            if (findItem.next instanceof LinkedListItem_1.default) {
                 findItem.next.setPrev(findItem.prev);
             }
             else {
@@ -141,5 +143,5 @@ class LinkedList {
         };
     }
 }
-exports.LinkedList = LinkedList;
+exports.default = LinkedList;
 _LinkedList_first = new WeakMap(), _LinkedList_last = new WeakMap();
