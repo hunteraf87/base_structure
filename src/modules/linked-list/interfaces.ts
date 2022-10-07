@@ -1,18 +1,24 @@
-export type ValueType = any
-
-export interface ILinkedListItem {
-    value: ValueType;
-    next: ILinkedListItem | null;
-    prev: ILinkedListItem | null;
+export interface ILinkedListItem<T> {
+    value: T;
+    get next(): ILinkedListItem<T> | null;
+    get prev(): ILinkedListItem<T> | null;
+    setNext(item: ILinkedListItem<T>): void;
+    setPrev(item: ILinkedListItem<T>): void;
 }
 
-export interface ILinkedList {
-    first: ILinkedListItem | null;
-    last: ILinkedListItem | null;
+export interface ILinkedList<T> {
+    get first(): ILinkedListItem<T> | null;
+    get last(): ILinkedListItem<T> | null;
+    get items(): Iterable<ILinkedListItem<T>>;
+    get reverseItems(): Iterable<ILinkedListItem<T>>;
+    get values(): Iterable<T>;
+    get reverseValues(): Iterable<T>;
 
-    add(value: ValueType): void;
-    find(value: ValueType, strict: boolean): ILinkedListItem | null;
-    insertBefore(value: ValueType, itemList: ILinkedListItem): ILinkedListItem;
-    insertAfter(value: ValueType, itemList: ILinkedListItem): ILinkedListItem;
-    delete(value: ValueType, strict: boolean): boolean;
+    add(value: T): void;
+    find(value: T, strict: boolean): ILinkedListItem<T> | null;
+    insertBefore(value: T, itemList: ILinkedListItem<T>): ILinkedListItem<T>;
+    insertAfter(value: T, itemList: ILinkedListItem<T>): ILinkedListItem<T>;
+    delete(value: T, strict: boolean): boolean;
 }
+
+export type ListItemOrNull<T> = ILinkedListItem<T> | null;

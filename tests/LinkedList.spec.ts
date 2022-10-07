@@ -2,7 +2,7 @@ import assert from 'assert';
 import { LinkedList } from '../src';
 
 const createBaseList = () => {
-    const list = new LinkedList();
+    const list = new LinkedList<any>();
     list.add(1);
     list.add(2);
     list.add(3);
@@ -81,8 +81,17 @@ describe("LinkedList", function () {
         assert.strictEqual(list.delete(500), true);
     });
 
+    it("Удаление значения по ссылке", function () {
+        assert.strictEqual(list.delete(list.first), true);
+    });
+
+
     it("Удаление несуществующего значения", function () {
         assert.strictEqual(list.delete(100), false);
     });
 
+    it("Проверка списка на пустоту", function () {
+        assert.strictEqual(list.isEmpty(), false);
+        assert.strictEqual((new LinkedList()).isEmpty(), true);
+    });
 });

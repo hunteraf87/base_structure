@@ -1,57 +1,79 @@
-import {ILinkedList, ILinkedListItem, ValueType} from "./interfaces";
+import {ILinkedList, ListItemOrNull, ILinkedListItem} from "./interfaces";
 import {LinkedListItem} from "./LinkedListItem";
 
-export class LinkedList implements ILinkedList {
-    public first: ILinkedListItem | null = null;
-    public last: ILinkedListItem | null = null;
+export class LinkedList<T = unknown> implements ILinkedList<T> {
+    #first: ListItemOrNull<T> = null;
+    #last: ListItemOrNull<T> = null;
 
-    add(value: ValueType): void {
+    get first(): ListItemOrNull<T> {
+        return this.#first;
+    }
+
+    get last(): ListItemOrNull<T> {
+        return this.#last;
+    }
+
+    add(value: T): void {
         const newItem = new LinkedListItem(value);
-        if (this.last) {
-            newItem.prev = this.last;
-            this.last.next = newItem;
-            this.last = newItem;
+        if (this.#last instanceof LinkedListItem) {
+            newItem.setPrev(this.#last);
+            this.#last.setNext(newItem);
+            this.#last = newItem;
         } else {
-            this.first = newItem;
-            this.last = newItem;
+            this.#first = newItem;
+            this.#last = newItem;
         }
     }
 
-    insertBefore(value: ValueType, itemList: LinkedListItem): LinkedListItem {
+    insertBefore(value: T, before: T): ILinkedListItem<T>
+    insertBefore(value: T, itemList: ILinkedListItem<T>): ILinkedListItem<T>;
+    insertBefore(value: T, itemOrValue: ILinkedListItem<T> | T): ILinkedListItem<T> {
         const newItem = new LinkedListItem(value);
+        const itemList = itemOrValue instanceof LinkedListItem ? itemOrValue : this.find(<T>itemOrValue);
 
-        newItem.next = itemList;
-        newItem.prev = itemList.prev;
+        if (itemList === null) {
+            throw new Error(`Value '${itemOrValue} not found id list'`)
+        }
+
+        newItem.setNext(itemList);
+        newItem.setPrev(itemList.prev);
 
         if (newItem.prev instanceof LinkedListItem) {
-            newItem.prev.next = newItem;
+            newItem.prev.setNext(newItem);
         }
-        if (itemList === this.first) {
-            this.first = newItem;
+        if (itemList === this.#first) {
+            this.#first = newItem;
         }
 
-        itemList.prev = newItem;
+        itemList.setPrev(newItem);
 
         return newItem;
     }
 
-    insertAfter(value: ValueType, itemList: LinkedListItem): LinkedListItem {
+    insertAfter(value: T, after: T): ILinkedListItem<T>
+    insertAfter(value: T, itemList: ILinkedListItem<T>): ILinkedListItem<T>;
+    insertAfter(value: T, itemOrValue: ILinkedListItem<T> | T): ILinkedListItem<T> {
         const newItem = new LinkedListItem(value);
+        const itemList = itemOrValue instanceof LinkedListItem ? itemOrValue : this.find(<T>itemOrValue);
 
-        newItem.prev = itemList;
-        newItem.next = itemList.next;
-
-        if (itemList === this.last) {
-            this.last = newItem;
+        if (itemList === null) {
+            throw new Error(`Value '${itemOrValue} not found id list'`)
         }
 
-        itemList.next = newItem;
+        newItem.setPrev(itemList);
+        newItem.setNext(itemList.next);
+
+        if (itemList === this.#last) {
+            this.#last = newItem;
+        }
+
+        itemList.setNext(newItem);
 
         return newItem;
     }
 
-    find(value: ValueType, strict: boolean = true): LinkedListItem | null {
-        for (let itemList of this) {
+    find(value: T, strict: boolean = true): ListItemOrNull<T> {
+        for (let itemList of this.items) {
             if (strict ? value === itemList.value : value == itemList.value) {
                 return itemList;
             }
@@ -59,39 +81,71 @@ export class LinkedList implements ILinkedList {
         return null;
     }
 
-    delete(value: ValueType, strict: boolean = true): boolean {
-        const findItem = this.find(value, strict);
+    delete(value: ILinkedListItem<T>): boolean;
+    delete(value: T, strict?: boolean): boolean;
+    delete(valueOrItem: ILinkedListItem<T> | T, strict: boolean = true): boolean {
+        const findItem = valueOrItem instanceof LinkedListItem ? valueOrItem : this.find(<T>valueOrItem, strict);
         if (findItem instanceof LinkedListItem) {
             if (findItem.prev instanceof LinkedListItem) {
-                findItem.prev.next = findItem.next;
+                findItem.prev.setNext(findItem.next);
             } else {
-                this.first = findItem.next;
+                this.#first = findItem.next;
             }
             if (findItem.next instanceof LinkedListItem) {
-                findItem.next.prev = findItem.prev;
+                findItem.next.setPrev(findItem.prev);
             } else {
-                this.last = findItem.prev;
+                this.#last = findItem.prev;
             }
             return true;
         }
         return false;
     }
 
-    [Symbol.iterator](): Iterator<LinkedListItem> {
-        let current = this.first;
+    isEmpty(): boolean {
+        return this.#first === null;
+    }
+
+    get items(): Iterable<ILinkedListItem<T>> {
+        let current = this.#first;
         return {
-            next() {
-                if (current instanceof LinkedListItem) {
-                    const value = current;
-                    current = current.next;
-                    return {
-                        done: false,
-                        value
-                    }
+            * [Symbol.iterator](): Iterator<ILinkedListItem<T>> {
+                while (current) {
+                    yield current;
+                    current = current.next
                 }
-                return {
-                    done: true,
-                    value: null
+            }
+        }
+    }
+
+    get reverseItems(): Iterable<ILinkedListItem<T>> {
+        let current = this.#last;
+        return {
+            * [Symbol.iterator](): Iterator<ILinkedListItem<T>> {
+                while (current) {
+                    yield current;
+                    current = current.prev
+                }
+            }
+        }
+    }
+
+    get values(): Iterable<T> {
+        const self = this;
+        return {
+            * [Symbol.iterator](): Iterator<T> {
+                for(let item of self.items) {
+                    yield item.value;
+                }
+            }
+        }
+    }
+
+    get reverseValues(): Iterable<T> {
+        const self = this;
+        return {
+            * [Symbol.iterator](): Iterator<T> {
+                for(let item of self.reverseItems) {
+                    yield item.value;
                 }
             }
         }
