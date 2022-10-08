@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LimitedStack = exports.DoubleQueue = exports.SimpleQueue = exports.LinkedList = void 0;
+exports.Structure = exports.LimitedStack = exports.DoubleQueue = exports.SimpleQueue = exports.LinkedList = void 0;
 var linked_list_1 = require("./modules/linked-list");
 Object.defineProperty(exports, "LinkedList", { enumerable: true, get: function () { return linked_list_1.LinkedList; } });
 var queue_1 = require("./modules/queue");
@@ -8,3 +8,5 @@ Object.defineProperty(exports, "SimpleQueue", { enumerable: true, get: function 
 Object.defineProperty(exports, "DoubleQueue", { enumerable: true, get: function () { return queue_1.DoubleQueue; } });
 var stack_1 = require("./modules/stack");
 Object.defineProperty(exports, "LimitedStack", { enumerable: true, get: function () { return stack_1.LimitedStack; } });
+var structure_1 = require("./modules/structure");
+Object.defineProperty(exports, "Structure", { enumerable: true, get: function () { return structure_1.Structure; } });
