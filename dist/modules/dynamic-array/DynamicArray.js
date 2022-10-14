@@ -125,8 +125,6 @@ class DynamicArray {
         const offset = insertArray.length - countDelete;
         const moveIdx = idx + countDelete;
         if (offset !== 0) {
-            console.log('moveIdx', moveIdx);
-            console.log('offset', offset);
             this.moveElements(moveIdx, offset);
         }
         let curIdx = idx;
