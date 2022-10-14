@@ -33,10 +33,6 @@ class Structure {
         });
         __classPrivateFieldSet(this, _Structure_func, __classPrivateFieldGet(this, _Structure_func, "f").replaceAll(/\$returns\$/g, returns), "f");
     }
-    print() {
-        const func = Function('key', __classPrivateFieldGet(this, _Structure_func, "f"));
-        console.log(func.toString());
-    }
     get(key) {
         return Function('key', __classPrivateFieldGet(this, _Structure_func, "f"))(key);
     }
