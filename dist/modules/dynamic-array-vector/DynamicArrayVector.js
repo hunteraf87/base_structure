@@ -12,7 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _DynamicArrayVector_vector, _DynamicArrayVector_length, _DynamicArrayVector_capacity;
 Object.defineProperty(exports, "__esModule", { value: true });
-const MAX_CAPACITY = 4294967296;
+const MAX_CAPACITY = 4294967295;
 class DynamicArrayVector {
     constructor(capacity = 10) {
         _DynamicArrayVector_vector.set(this, void 0);

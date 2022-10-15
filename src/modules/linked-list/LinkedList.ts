@@ -4,6 +4,7 @@ import LinkedListItem from "./LinkedListItem";
 export default class LinkedList<T = unknown> implements ILinkedList<T> {
     #first: ListItemOrNull<T> = null;
     #last: ListItemOrNull<T> = null;
+    #length: number = 0;
 
     get first(): ListItemOrNull<T> {
         return this.#first;
@@ -11,6 +12,10 @@ export default class LinkedList<T = unknown> implements ILinkedList<T> {
 
     get last(): ListItemOrNull<T> {
         return this.#last;
+    }
+
+    get length(): number {
+        return this.#length;
     }
 
     add(value: T): void {
@@ -23,6 +28,7 @@ export default class LinkedList<T = unknown> implements ILinkedList<T> {
             this.#first = newItem;
             this.#last = newItem;
         }
+        this.#length++;
     }
 
     insertBefore(value: T, before: T): ILinkedListItem<T>
@@ -46,6 +52,7 @@ export default class LinkedList<T = unknown> implements ILinkedList<T> {
         }
 
         itemList.setPrev(newItem);
+        this.#length++;
 
         return newItem;
     }
@@ -68,6 +75,7 @@ export default class LinkedList<T = unknown> implements ILinkedList<T> {
         }
 
         itemList.setNext(newItem);
+        this.#length++;
 
         return newItem;
     }
@@ -96,6 +104,7 @@ export default class LinkedList<T = unknown> implements ILinkedList<T> {
             } else {
                 this.#last = findItem.prev;
             }
+            this.#length--;
             return true;
         }
         return false;

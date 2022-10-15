@@ -9,6 +9,7 @@ export interface ILinkedListItem<T> {
 export interface ILinkedList<T> {
     get first(): ILinkedListItem<T> | null;
     get last(): ILinkedListItem<T> | null;
+    get length(): number;
     get items(): Iterable<ILinkedListItem<T>>;
     get reverseItems(): Iterable<ILinkedListItem<T>>;
     get values(): Iterable<T>;
