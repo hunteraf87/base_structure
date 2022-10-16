@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { SimpleQueue } from '../src';
+import { SimpleQueue } from '.';
 
 const createSimpleQueue = () => {
     const queue = new SimpleQueue<number>();
