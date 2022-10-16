@@ -11,7 +11,7 @@ function checkSimple(n) {
     return true;
 }
 exports.checkSimple = checkSimple;
-function stringToNumber(str, sizeBase = 27) {
+function stringToNumber(str, sizeBase = 10) {
     let sum = 0;
     let i = 0;
     for (let char of str) {

@@ -12,14 +12,14 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _HashMap_map, _HashMap_capacity;
 Object.defineProperty(exports, "__esModule", { value: true });
-const Functions_1 = require("./Functions");
+const helpers_1 = require("./helpers");
 const linked_list_1 = require("../linked-list");
 const DEFAULT_CAPACITY = 31;
 class HashMap {
     constructor(capacity = DEFAULT_CAPACITY) {
         _HashMap_map.set(this, void 0);
         _HashMap_capacity.set(this, void 0);
-        if (capacity <= 2 || !(0, Functions_1.checkSimple)(capacity)) {
+        if (capacity <= 2 || !(0, helpers_1.checkSimple)(capacity)) {
             throw new Error('Need simple number for capacity');
         }
         __classPrivateFieldSet(this, _HashMap_capacity, capacity, "f");
@@ -40,41 +40,28 @@ class HashMap {
         const hash = this.getHash(k);
         return this.getMapValue(hash, k);
     }
+    delete(key) {
+        this.checkKey(key);
+        const k = key.toString();
+        const hash = this.getHash(k);
+        this.deleteMapValue(hash, k);
+    }
     getHash(key) {
-        return (0, Functions_1.stringToNumber)(key) % __classPrivateFieldGet(this, _HashMap_capacity, "f");
+        return (0, helpers_1.stringToNumber)(key) % __classPrivateFieldGet(this, _HashMap_capacity, "f");
     }
     setMapValue(hash, value, distinct) {
         const map = distinct ?? __classPrivateFieldGet(this, _HashMap_map, "f");
         if (map[hash] === undefined) {
-            map[hash] = value;
+            map[hash] = new linked_list_1.LinkedList();
         }
-        else {
-            if (Array.isArray(map[hash])) {
-                const linkedList = new linked_list_1.LinkedList();
-                linkedList.add(map[hash]);
-                linkedList.add(value);
-                map[hash] = linkedList;
-            }
-            else {
-                const item = map[hash];
-                item.add(value);
-                if (this.checkReHashing(item)) {
-                    this.rehash();
-                }
-            }
+        map[hash].add(value);
+        if (map[hash].length > 2) {
+            this.rehash();
         }
     }
     getMapValue(hash, key) {
         const item = __classPrivateFieldGet(this, _HashMap_map, "f")[hash];
-        if (item === undefined) {
-            throw new Error('Key not found');
-        }
-        if (Array.isArray(item)) {
-            if (item[0] === key) {
-                return item[1];
-            }
-        }
-        else {
+        if (item !== undefined) {
             for (let val of item.values) {
                 if (val[0] === key) {
                     return val[1];
@@ -83,10 +70,22 @@ class HashMap {
         }
         throw new Error('Key not found');
     }
+    deleteMapValue(hash, key) {
+        const item = __classPrivateFieldGet(this, _HashMap_map, "f")[hash];
+        if (item !== undefined) {
+            for (let val of item.values) {
+                if (val[0] === key) {
+                    item.delete(val);
+                    return;
+                }
+            }
+        }
+        throw new Error('Key not found');
+    }
     rehash() {
         var _a;
         __classPrivateFieldSet(this, _HashMap_capacity, __classPrivateFieldGet(this, _HashMap_capacity, "f") * 2 + 1, "f");
-        while (!(0, Functions_1.checkSimple)(__classPrivateFieldGet(this, _HashMap_capacity, "f"))) {
+        while (!(0, helpers_1.checkSimple)(__classPrivateFieldGet(this, _HashMap_capacity, "f"))) {
             __classPrivateFieldSet(this, _HashMap_capacity, (_a = __classPrivateFieldGet(this, _HashMap_capacity, "f"), _a++, _a), "f");
         }
         const newMap = new Array(__classPrivateFieldGet(this, _HashMap_capacity, "f"));
@@ -100,25 +99,48 @@ class HashMap {
             throw new Error('Key of map includes only latin symbols or numbers');
         }
     }
-    checkReHashing(list) {
-        return list.length > 3;
-    }
-    get keys() {
-        const self = this;
+    keys() {
+        const entities = this.entities();
         return {
-            *[Symbol.iterator]() {
-                for (let item of self.entities()) {
-                    yield item[0];
+            [Symbol.iterator]() {
+                return this;
+            },
+            next() {
+                const item = entities.next();
+                if (!item.done) {
+                    return {
+                        done: false,
+                        value: item.value[0]
+                    };
+                }
+                else {
+                    return {
+                        done: true,
+                        value: null
+                    };
                 }
             }
         };
     }
-    get values() {
-        const self = this;
+    values() {
+        const entities = this.entities();
         return {
-            *[Symbol.iterator]() {
-                for (let item of self.entities()) {
-                    yield item[1];
+            [Symbol.iterator]() {
+                return this;
+            },
+            next() {
+                const item = entities.next();
+                if (!item.done) {
+                    return {
+                        done: false,
+                        value: item.value[1]
+                    };
+                }
+                else {
+                    return {
+                        done: true,
+                        value: null
+                    };
                 }
             }
         };
@@ -128,13 +150,8 @@ class HashMap {
             if (item === undefined) {
                 continue;
             }
-            if (Array.isArray(item)) {
-                yield item;
-            }
-            else {
-                for (let itemList of item.values) {
-                    yield itemList;
-                }
+            for (let itemList of item.values) {
+                yield itemList;
             }
         }
     }

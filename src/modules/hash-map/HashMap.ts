@@ -2,7 +2,7 @@ import {
     HashMap as Map,
     KeyMap, HashItem, HashValue
 } from './interfaces';
-import {checkSimple, stringToNumber} from './Functions'
+import {checkSimple, stringToNumber} from './helpers'
 import {LinkedList} from "../linked-list";
 
 const DEFAULT_CAPACITY = 31;
@@ -37,43 +37,50 @@ export default class HashMap<T = unknown> implements Map<T> {
         return this.getMapValue(hash, k);
     }
 
+    delete(key: KeyMap): void {
+        this.checkKey(key);
+        const k = key.toString();
+        const hash = this.getHash(k);
+        this.deleteMapValue(hash, k);
+    }
+
     protected getHash(key: string): number {
         return stringToNumber(key) % this.#capacity;
     }
 
     protected setMapValue(hash: number, value: HashValue<T>, distinct?: Array<HashItem<T>>): void {
         const map = distinct ?? this.#map;
+
         if (map[hash] === undefined) {
-            map[hash] = value;
-        } else {
-            if (Array.isArray(map[hash])) {
-                const linkedList = new LinkedList<HashValue<T>>();
-                linkedList.add(<HashValue<T>>map[hash]);
-                linkedList.add(value);
-                map[hash] = linkedList;
-            } else {
-                const item = <LinkedList<HashValue<T>>>map[hash];
-                item.add(value);
-                if (this.checkReHashing(item)) {
-                    this.rehash();
-                }
-            }
+            map[hash] = new LinkedList<HashValue<T>>();
+        }
+
+        map[hash].add(value);
+
+        if (map[hash].length > 2) {
+            this.rehash();
         }
     }
 
     protected getMapValue(hash: number, key: string): T {
         const item = this.#map[hash];
-        if (item === undefined) {
-            throw new Error('Key not found')
-        }
-        if (Array.isArray(item)) {
-            if (item[0] === key) {
-                return item[1];
-            }
-        } else {
+        if (item !== undefined) {
             for (let val of item.values) {
                 if (val[0] === key) {
                     return val[1];
+                }
+            }
+        }
+        throw new Error('Key not found');
+    }
+
+    protected deleteMapValue(hash: number, key: string): void {
+        const item = this.#map[hash];
+        if (item !== undefined) {
+            for (let val of item.values) {
+                if (val[0] === key) {
+                    item.delete(val);
+                    return;
                 }
             }
         }
@@ -98,43 +105,59 @@ export default class HashMap<T = unknown> implements Map<T> {
         }
     }
 
-    protected checkReHashing(list: LinkedList<HashValue<T>>): boolean {
-        return list.length > 3;
-    }
-
-    get keys(): Iterable<string> {
-        const self = this;
+    keys(): IterableIterator<string> {
+        const entities = this.entities();
         return {
-            * [Symbol.iterator](): Iterator<string> {
-                for (let item of self.entities()) {
-                    yield item[0];
+            [Symbol.iterator]() {
+                return this;
+            },
+            next() {
+                const item = entities.next();
+                if (!item.done) {
+                    return {
+                        done: false,
+                        value: item.value[0]
+                    };
+                } else {
+                    return {
+                        done: true,
+                        value: null
+                    }
                 }
             }
         }
     }
 
-    get values(): Iterable<T> {
-        const self = this;
+    values(): IterableIterator<T> {
+        const entities = this.entities();
         return {
-            * [Symbol.iterator](): Iterator<T> {
-                for (let item of self.entities()) {
-                    yield item[1];
+            [Symbol.iterator]() {
+                return this;
+            },
+            next() {
+                const item = entities.next();
+                if (!item.done) {
+                    return {
+                        done: false,
+                        value: item.value[1]
+                    };
+                } else {
+                    return {
+                        done: true,
+                        value: null
+                    }
                 }
             }
         }
     }
 
-    *entities(): Generator<HashValue<T>> {
+    private *entities(): Generator<HashValue<T>> {
         for (let item of this.#map) {
             if (item === undefined) {
                 continue;
             }
-            if (Array.isArray(item)) {
-                yield item;
-            } else {
-                for (let itemList of item.values) {
-                    yield itemList;
-                }
+            for (let itemList of item.values) {
+                yield itemList;
             }
         }
     }

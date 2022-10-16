@@ -8,7 +8,7 @@ export function checkSimple(n: number): boolean {
     return true;
 }
 
-export function stringToNumber(str: string, sizeBase: number = 27): number {
+export function stringToNumber(str: string, sizeBase: number = 10): number {
     let sum = 0;
     let i = 0;
     for (let char of str) {
