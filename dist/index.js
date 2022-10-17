@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.binarySearch = exports.HashMap = exports.DynamicArrayVector = exports.DynamicArray = exports.Structure = exports.LimitedStack = exports.DoubleQueue = exports.SimpleQueue = exports.LinkedList = void 0;
+exports.BinaryTree = exports.binarySearch = exports.HashMap = exports.DynamicArrayVector = exports.DynamicArray = exports.Structure = exports.LimitedStack = exports.DoubleQueue = exports.SimpleQueue = exports.LinkedList = void 0;
 var linked_list_1 = require("./modules/linked-list");
 Object.defineProperty(exports, "LinkedList", { enumerable: true, get: function () { return linked_list_1.LinkedList; } });
 var queue_1 = require("./modules/queue");
@@ -18,3 +18,5 @@ var hash_map_1 = require("./modules/hash-map");
 Object.defineProperty(exports, "HashMap", { enumerable: true, get: function () { return hash_map_1.HashMap; } });
 var binary_search_1 = require("./modules/binary-search");
 Object.defineProperty(exports, "binarySearch", { enumerable: true, get: function () { return binary_search_1.binarySearch; } });
+var binary_tree_1 = require("./modules/binary-tree");
+Object.defineProperty(exports, "BinaryTree", { enumerable: true, get: function () { return binary_tree_1.BinaryTree; } });

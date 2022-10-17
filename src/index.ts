@@ -6,3 +6,4 @@ export {DynamicArray} from './modules/dynamic-array';
 export {DynamicArrayVector} from './modules/dynamic-array-vector';
 export {HashMap} from './modules/hash-map';
 export {binarySearch} from './modules/binary-search';
+export {BinaryTree} from './modules/binary-tree';
