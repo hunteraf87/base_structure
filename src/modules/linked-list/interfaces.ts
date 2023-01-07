@@ -10,10 +10,10 @@ export interface ILinkedList<T> {
     get first(): ILinkedListItem<T> | null;
     get last(): ILinkedListItem<T> | null;
     get length(): number;
-    get items(): Iterable<ILinkedListItem<T>>;
-    get reverseItems(): Iterable<ILinkedListItem<T>>;
-    get values(): Iterable<T>;
-    get reverseValues(): Iterable<T>;
+    items(): IterableIterator<ILinkedListItem<T>>;
+    reverseItems(): IterableIterator<ILinkedListItem<T>>;
+    values(): IterableIterator<T>;
+    reverseValues(): IterableIterator<T>;
 
     add(value: T): void;
     find(value: T, strict: boolean): ILinkedListItem<T> | null;

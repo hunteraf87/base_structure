@@ -81,7 +81,7 @@ export default class LinkedList<T = unknown> implements ILinkedList<T> {
     }
 
     find(value: T, strict: boolean = true): ListItemOrNull<T> {
-        for (let itemList of this.items) {
+        for (let itemList of this.items()) {
             if (strict ? value === itemList.value : value == itemList.value) {
                 return itemList;
             }
@@ -114,48 +114,82 @@ export default class LinkedList<T = unknown> implements ILinkedList<T> {
         return this.#first === null;
     }
 
-    get items(): Iterable<ILinkedListItem<T>> {
+    items(): IterableIterator<ILinkedListItem<T>> {
         let current = this.#first;
+        function *generate() {
+            while (current) {
+                yield current;
+                current = current.next
+            }
+        }
+
+        const iter = generate();
         return {
-            * [Symbol.iterator](): Iterator<ILinkedListItem<T>> {
-                while (current) {
-                    yield current;
-                    current = current.next
-                }
+            [Symbol.iterator](): IterableIterator<ILinkedListItem<T>> {
+                return this;
+            },
+            next(): IteratorResult<ILinkedListItem<T>> {
+                return iter.next();
             }
         }
     }
 
-    get reverseItems(): Iterable<ILinkedListItem<T>> {
+    reverseItems(): IterableIterator<ILinkedListItem<T>> {
         let current = this.#last;
+        function *generate() {
+            while (current) {
+                yield current;
+                current = current.prev
+            }
+        }
+
+        const iter = generate();
         return {
-            * [Symbol.iterator](): Iterator<ILinkedListItem<T>> {
-                while (current) {
-                    yield current;
-                    current = current.prev
-                }
+            [Symbol.iterator](): IterableIterator<ILinkedListItem<T>> {
+                return this;
+            },
+            next(): IteratorResult<ILinkedListItem<T>> {
+                return iter.next();
             }
         }
     }
 
-    get values(): Iterable<T> {
+    values(): IterableIterator<T> {
         const self = this;
+        function *generate() {
+            for(let item of self.items()) {
+                yield item.value;
+            }
+        }
+
+        const iter = generate();
+
         return {
-            * [Symbol.iterator](): Iterator<T> {
-                for(let item of self.items) {
-                    yield item.value;
-                }
+            [Symbol.iterator](): IterableIterator<T> {
+                return this;
+            },
+            next(): IteratorResult<T> {
+                return iter.next();
             }
         }
     }
 
-    get reverseValues(): Iterable<T> {
+    reverseValues(): IterableIterator<T> {
         const self = this;
+        function *generate() {
+            for(let item of self.reverseItems()) {
+                yield item.value;
+            }
+        }
+
+        const iter = generate();
+
         return {
-            * [Symbol.iterator](): Iterator<T> {
-                for(let item of self.reverseItems) {
-                    yield item.value;
-                }
+            [Symbol.iterator](): IterableIterator<T> {
+                return this;
+            },
+            next(): IteratorResult<T> {
+                return iter.next();
             }
         }
     }

@@ -1,7 +1,7 @@
 import {LimitedStack as Stack} from './interfaces';
 
 export default class LimitedStack<T = unknown> implements Stack<T> {
-    #stack: Array<T>;
+    readonly #stack: Array<T>;
     #current: number = -1;
     readonly limit: number;
 
@@ -40,13 +40,23 @@ export default class LimitedStack<T = unknown> implements Stack<T> {
         return this.#current < 0;
     }
 
-    get values(): Iterable<T> {
+    values(): IterableIterator<T> {
         const self = this;
+
+        function *generate() {
+            for(let i = 0; i <= self.#current; i++) {
+                yield self.#stack[i];
+            }
+        }
+
+        const iter = generate();
+
         return {
-            * [Symbol.iterator](): Iterator<T> {
-                for(let i = 0; i <= self.#current; i++) {
-                    yield self.#stack[i];
-                }
+            [Symbol.iterator](): IterableIterator<T> {
+                return this;
+            },
+            next(): IteratorResult<T> {
+                return iter.next();
             }
         }
     }

@@ -30,13 +30,22 @@ export default class SimpleQueue<T = unknown> implements ISimpleQueue<T> {
         return this.queue.isEmpty();
     }
 
-    get values(): Iterable<T> {
+    values(): IterableIterator<T> {
         const self = this.queue;
+
+        function *generate() {
+            for (let item of self.values()) {
+                yield item;
+            }
+        }
+
+        const iter = generate();
         return {
-            * [Symbol.iterator](): Iterator<T>{
-                for (let item of self.values) {
-                    yield item;
-                }
+            [Symbol.iterator](): IterableIterator<T>{
+                return this;
+            },
+            next(): IteratorResult<T> {
+                return iter.next();
             }
         }
     }
