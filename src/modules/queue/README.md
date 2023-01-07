@@ -1,48 +1,67 @@
 # Очереди
 
 ## Простая очередь на основе списка
+// Создание очереди
+````js
+const queue = new SimpleQueue();
+queue.values  // итератор по значениям
+````
 
-    const {SimpleQueue} = require('../dist')
+Добавление элемента
+````js
+queue.push(1);
+queue.push(2);
+queue.push(3);
+````
 
-    const queue = new SimpleQueue();  // Создание очереди
-    
-    // Добавление элемента
-    queue.push(1);
-    queue.push(2);
-    queue.push(3);
-    
-    // Геттер head получает значение очереди для извлечения
-    // console.log(queue.head) // 1
+Геттер head получает значение очереди для извлечения
+````js
+console.log(queue.head) // 1
+````
 
-    // Извлечение значения из очереди
-    // console.log(queue.shift()) // 1
-    // console.log(queue.shift()) // 2
-    // console.log(queue.shift()) // 3
-    // console.log(queue.shift()) // Exception
-    
-    // queue.values итератор по значениям
+Извлечение значения из очереди
+````js
+console.log(queue.shift()) // 1
+console.log(queue.shift()) // 2
+console.log(queue.shift()) // 3
+console.log(queue.shift()) // Exception
+````
 
 ## Двухстороння очередь
+Создание очереди
+````js
+const queue = new DoubleQueue();
+queue.values // итератор по значениям
+````
 
-    const {DoubleQueue} = require('../dist')
+Добавление элемента в конец очереди
+````js
+queue.push(1);
+queue.push(2);
+queue.push(3);
+````
 
-    const queue = new DoubleQueue(); // Создание очереди
+Геттер head получает значение очереди с начала
+````js
+console.log(queue.head) // 1
+````
 
-    // Добавление элемента в конец очереди
-    queue.push(1);
-    queue.push(2);
-    queue.push(3);
+Геттер back получает значение очереди с конца
+````js
+console.log(queue.back) // 3
+````
 
-    // Геттер head получает значение очереди с начала
-    console.log(queue.head) // 1
-    // Геттер back получает значение очереди с конца
-    console.log(queue.back) // 3
+Вставка элемента в начало очереди
+````js
+queue.unshift(0); 
+````
 
-    queue.unshift(0); // Вставка элемента в начало очереди
-    console.log(queue.shift()) // 0 Извлечение элемента из начала очереди
-    console.log(queue.pop()) // 3 Извлечение элемента из коца очереди
-    // console.log(queue.shift()) // 1 
-    // console.log(queue.shift()) // 2
-    // console.log(queue.shift()) // Exception
-    
-    // queue.values итератор по значениям
+Извлечение элемента из начала очереди
+````js
+queue.shift() 
+````
+
+Извлечение элемента из коца очереди
+````js
+queue.pop() 
+````
